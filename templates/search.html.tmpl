@@ -20,15 +20,16 @@
       <div class="inner">
         <div id="topnav"> <a href="/"> {{ .Site }} </a> </div>
         <form method="GET" id="tagform">
-          <input name="q" id="query" type="text" placeholder="Search by Tag name" />
+          <input name="q" id="query" type="text" placeholder="Search by keyword" />
           <input type="submit" value="search" />
         </form>
         <hr>
+	{{ if .SelectedTag }} <a href="/s/q={{.SelectedTag.ID}}"><img src='/static/tag.png' width="24" height="24"/></a> {{ end }}
 	{{ if .Search }}
         <table id="tagged">
           <thead>
             <tr class="header">
-              <td colspan="4">Torrents containing {{ if.SelectedTag }} tag/keyword {{ .SelectedTag.Name }} {{ else }} keyword {{ .SearchTag }} {{ end }}: &nbsp;
+              <td colspan="4">Torrents containing keyword {{ .SearchTag }}: &nbsp;
                 <span id="atom" style="float: right;"><a href="{{ .FeedURL }}" title="Atom feed"><img src="/static/feed.png"></a></span>
               </td>
             </tr>
