@@ -24,13 +24,12 @@
           <input type="submit" value="search" />
         </form>
         <hr>
-
-        {{ if .SelectedTag }}
+	{{ if .Search }}
         <table id="tagged">
           <thead>
             <tr class="header">
-              <td colspan="4">Torrents with tag: {{ .SelectedTag.Name }}&nbsp;
-                <span id="atom" style="float: right;"><a href="{{ .FeedURL }}" title="Atom feed for '{{ .SelectedTag.Name }}' tag"><img src="/static/feed.png"></a></span>
+              <td colspan="4">Torrents containing {{ if.SelectedTag }} tag/keyword {{ .SelectedTag.Name }} {{ else }} keyword {{ .SearchTag }} {{ end }}: &nbsp;
+                <span id="atom" style="float: right;"><a href="{{ .FeedURL }}" title="Atom feed"><img src="/static/feed.png"></a></span>
               </td>
             </tr>
             <tr>
@@ -49,8 +48,8 @@
               </td>
             </tr> {{ end }}
           </tbody>
-        </table> {{ else }} {{ if .Search }} <h3>Tag does not exist in the database.</h3> {{ else }}
-
+        </table> 
+	{{ else }}
         <table id="tags">
           <thead>
             <tr class="header">
@@ -65,11 +64,11 @@
               <td>{{ .Rank }} result(s) </td>
             </tr> {{ end }}
           </tbody>
-        </table> {{ end }} {{ end }} {{ template "script.html.tmpl" . }}
-
+        </table>{{ end }} {{ template "script.html.tmpl" . }}
       </div>
     </div>
   </div>
 </body>
 
 </html>
+

@@ -104,7 +104,7 @@ func (s *Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 
 		if name != "" {
 			selectedTag, err = s.DB.GetTagByName(name)
-			torrentsWithFile, err := s.DB.FindTorrentsByFile(name, 50, 0)
+			torrentsWithFile, err := s.DB.FindTorrentsByFile(name, 300, 0)
 			if err != nil {
 				s.Error(w, err.Error(), j)
 			}
