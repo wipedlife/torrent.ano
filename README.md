@@ -10,7 +10,8 @@ Anonymous Torrent Index (with captcha)
 ## Building
 
     $ make
-
+## Update
+    $ make clear && make
 ## Running
 
     $ ./indextracker
