@@ -12,3 +12,6 @@ trackermanager:
 submodules:
 	git submodule init
 	git submodule update
+
+clear:
+	rm indextracker trackermanager
