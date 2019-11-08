@@ -135,7 +135,7 @@ func (st *Postgres) FindTorrentsByFile(name string, perpage, offset int) (torren
 	var rows *sql.Rows
 	//SELECT meta_infohash FROM metainfofiles WHERE filename LIKE '%mp3%' ORDER BY filename DESC LIMIT 50 OFFSET 0;
 	name = "%" + name + "%"
-	rows, err = st.conn.Query(fmt.Sprintf("SELECT meta_infohash FROM %s WHERE filename LIKE $1 ORDER BY filename DESC LIMIT $2 OFFSET $3;", tableFiles), name, perpage, offset)
+	rows, err = st.conn.Query(fmt.Sprintf("SELECT meta_infohash FROM %s WHERE filename ILIKE $1 ORDER BY filename DESC LIMIT $2 OFFSET $3;", tableFiles), name, perpage, offset)
 	if err == nil {
 		var hashes []string
 		for rows.Next() {

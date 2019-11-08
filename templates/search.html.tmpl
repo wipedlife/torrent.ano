@@ -24,7 +24,6 @@
           <input type="submit" value="search" />
         </form>
         <hr>
-        {{ if .SelectedTag }} <a href="/s/q={{.SelectedTag.ID}}"><img src='/static/tag.png' width="24" height="24"/></a> {{ end }}
         {{ if .Search }}
         <table id="tagged">
           <thead>
@@ -40,7 +39,8 @@
               <th class="download">Download</th>
             </tr>
           </thead>
-          <tbody> {{ range .Torrents }} <tr>
+          <tbody> {{ range .Torrents }}
+            <tr>
               <td><a href="/t/{{ .InfoHash }}/">{{ .Name }}</a></td>
               <td class="dateuploaded" title="{{ FormatDateRFC2822 .UploadedAt }}">{{ FormatDateNoTime .UploadedAt }}</td>
               <td class="filesize">{{ .SizeString }}</td>
