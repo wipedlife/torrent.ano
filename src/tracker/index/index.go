@@ -104,6 +104,11 @@ func (s *Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 
 		if name != "" {
 			selectedTag, err = s.DB.GetTagByName(name)
+			torrentsWithFile, err := s.DB.FindTorrentsByFile(name, 50, 0)
+			if err != nil {
+				s.Error(w, err.Error(), j)
+			}
+			torrents = append(torrents, torrentsWithFile...)
 		}
 
 		if selectedTag == nil && tag != "" {
@@ -122,12 +127,17 @@ func (s *Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if selectedTag != nil {
-			torrents, err = s.DB.FindTorrentsWithTag(*selectedTag)
+			torrentsWithTag, err := s.DB.FindTorrentsWithTag(*selectedTag)
+			if err != nil {
+				s.Error(w, err.Error(), j)
+			}
+
+			torrents = append(torrents, torrentsWithTag...)
 		}
 
 		if feed && selectedTag != nil {
 			f := &model.AtomFeed{
-				Title:   "Torrents tagged with '" + selectedTag.Name+"'",
+				Title:   "Torrents tagged with '" + selectedTag.Name + "'",
 				ID:      fmt.Sprintf("torrents-tag-%d", selectedTag.ID),
 				BaseURL: r.URL,
 				Domain:  r.Host,
@@ -425,7 +435,7 @@ func (s *Server) handleCategoryPage(w http.ResponseWriter, r *http.Request) {
 				"Site":        s.cfg.SiteName,
 				"NextPage":    nextPage,
 				"PrevPage":    prevPage,
-				"HasNextPage": !isEmpty && torrentsSize > perpage && torrentsSize/(perpage*page) != 0 ,
+				"HasNextPage": !isEmpty && torrentsSize > perpage && torrentsSize/(perpage*page) != 0,
 				"HasPrevPage": page > 0,
 			}
 
@@ -722,6 +732,7 @@ func (s *Server) serveTorrentInfo(w http.ResponseWriter, r *http.Request) {
 	}, j)
 }
 
+//change
 func (s *Server) checkAuth(r *http.Request) (ok, requireCaptcha bool, err error) {
 	var user, passwd string
 	user, passwd, ok = r.BasicAuth()
@@ -801,5 +812,6 @@ func New(cfg *config.IndexConfig) (s *Server) {
 	s.mux.HandleFunc("/t/", s.serveTorrentInfo)
 	s.mux.HandleFunc("/s/", s.handleSearch)
 	s.mux.HandleFunc("/", s.serveFrontPage)
+	//s.mux.HandleFunc("/a/",s.serveAuth)
 	return
 }

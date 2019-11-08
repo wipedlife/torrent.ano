@@ -131,14 +131,36 @@ func (st *Postgres) FindTorrentByInfohash(ih [20]byte) (t *model.Torrent, err er
 	return
 }
 
-func (st *Postgres) FindTorrentsByFile(name string, perpage, offset int) (torrents []model.Torrent, err error){
+func (st *Postgres) FindTorrentsByFile(name string, perpage, offset int) (torrents []model.Torrent, err error) {
 	var rows *sql.Rows
-	rows, err = st.conn.Query(fmt.Sprintf("SELECT id, filename, meta_infohash FROM %s WHERE filename LIKE '%$1%' ORDER BY filename DESC LIMIT $2 OFFSET $3", tableFiles), name, perpage, offset)
-	if err == nil{
-		for rows.Next(){
+	//SELECT meta_infohash FROM metainfofiles WHERE filename LIKE '%mp3%' ORDER BY filename DESC LIMIT 50 OFFSET 0;
+	name = "%" + name + "%"
+	rows, err = st.conn.Query(fmt.Sprintf("SELECT meta_infohash FROM %s WHERE filename LIKE $1 ORDER BY filename DESC LIMIT $2 OFFSET $3;", tableFiles), name, perpage, offset)
+	if err == nil {
+		var hashes []string
+		for rows.Next() {
+			var hash string
+			rows.Scan(&hash)
+			if util.ExistInSliceString(hashes, hash) {
+				continue
+			}
+			hashes = append(hashes, hash)
+			b, _ := hex.DecodeString(hash)
+			var ih [20]byte
+			copy(ih[:], b)
+			torrent, err := st.FindTorrentByInfohash(ih)
+			if err != nil {
+				err = err
+				continue
+			}
+
+			torrents = append(torrents, *torrent)
 		}
 	}
-	return nil,nil; // TODO
+	if len(torrents) == 0 {
+		return nil, err
+	}
+	return torrents, nil
 }
 
 func (st *Postgres) GetAllCategories() (cats []model.Category, err error) {

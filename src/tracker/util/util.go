@@ -27,3 +27,12 @@ func SizeString(sz uint64) string {
 	}
 	return fmt.Sprintf("%d %s", sz, unit)
 }
+
+func ExistInSliceString(a []string, b string) bool {
+	for c := range a {
+		if a[c] == b {
+			return true
+		}
+	}
+	return false
+}

@@ -24,18 +24,18 @@ func TestGetScrapeByInfoHash(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	fmt.Printf( "D: %d; C: %d, I:%d",mp.Downloaded, mp.Complete, mp.Incomplete )
+	fmt.Printf("D: %d; C: %d, I:%d", mp.Downloaded, mp.Complete, mp.Incomplete)
 }
 
-func TestGetScrapeByInfoHashInTrackers(t * testing.T){
-	trackers:= []string{"http://tracker.postman.i2p/announce"}
+func TestGetScrapeByInfoHashInTrackers(t *testing.T) {
+	trackers := []string{"http://tracker.postman.i2p/announce"}
 
-	err, mp := GetScrapeByInfoHashInTrackers(config_scrape.DEFAULT_SCRAPE_FILE_PATH, trackers, "9865c87afbdf138aa3e2b88220187f38015dcfc0", "http://127.0.0.1:4444" )
-	if err != nil{
-			t.Error(err)
+	err, mp := GetScrapeByInfoHashInTrackers(config_scrape.DEFAULT_SCRAPE_FILE_PATH, trackers, "9865c87afbdf138aa3e2b88220187f38015dcfc0", "http://127.0.0.1:4444")
+	if err != nil {
+		t.Error(err)
 	}
-	for m := range mp{
-			fmt.Printf( "D: %d; C: %d, I:%d",mp[m].Downloaded, mp[m].Complete, mp[m].Incomplete )
+	for m := range mp {
+		fmt.Printf("D: %d; C: %d, I:%d", mp[m].Downloaded, mp[m].Complete, mp[m].Incomplete)
 	}
 
 }

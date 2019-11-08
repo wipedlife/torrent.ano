@@ -2,25 +2,25 @@ package scrape
 
 import (
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	net_url "net/url"
 	"os"
-	"errors"
 )
 
-func DownloadFile(filepath string, url string, proxies ... string) (err error) {
+func DownloadFile(filepath string, url string, proxies ...string) (err error) {
 	var response *http.Response
-	if len(proxies) > 0{
-		for proxy := range proxies{
-			proxyURL, err := net_url.Parse( proxies[proxy] )
-			if err != nil{
+	if len(proxies) > 0 {
+		for proxy := range proxies {
+			proxyURL, err := net_url.Parse(proxies[proxy])
+			if err != nil {
 				err = err
 				continue
 			}
-			urlParsed, err := net_url.Parse( url )
-			if err != nil{
+			urlParsed, err := net_url.Parse(url)
+			if err != nil {
 				err = err
 				continue
 			}
@@ -31,21 +31,21 @@ func DownloadFile(filepath string, url string, proxies ... string) (err error) {
 				Transport: transport,
 			}
 			request, err := http.NewRequest("GET", urlParsed.String(), nil)
-			if err != nil{
+			if err != nil {
 				err = err
 				continue
 			}
 			response, err = client.Do(request)
-			if err != nil{
+			if err != nil {
 				err = err
 				continue
 			}
-			break;
+			break
 		}
-		if err != nil{
+		if err != nil {
 			return err
 		}
-	}else{
+	} else {
 		response, err = http.Get(url)
 		if err != nil {
 			return err
@@ -66,7 +66,7 @@ func DownloadFile(filepath string, url string, proxies ... string) (err error) {
 
 //hash from psql
 //url to scrape
-func GetScrapeByInfoHash(filepath string, url string, hash string, proxies ... string) (err error, mp Files) {
+func GetScrapeByInfoHash(filepath string, url string, hash string, proxies ...string) (err error, mp Files) {
 	var n int
 
 	src := []byte(hash)
@@ -77,37 +77,37 @@ func GetScrapeByInfoHash(filepath string, url string, hash string, proxies ... s
 		return err, mp
 	}
 	info_hash := fmt.Sprintf("%s", net_url.QueryEscape(string(bin[:n])))
-	FileURL, err := net_url.Parse( url+"?info_hash="+info_hash );
-	if err != nil{
+	FileURL, err := net_url.Parse(url + "?info_hash=" + info_hash)
+	if err != nil {
 		return err, mp
 	}
-	filepathFull:=filepath+"_"+hash
+	filepathFull := filepath + "_" + hash
 
-	if err := DownloadFile( filepathFull , FileURL.String(), proxies... ); err != nil {
+	if err := DownloadFile(filepathFull, FileURL.String(), proxies...); err != nil {
 		return err, mp
 	}
 	raw, err := ReadScrape(filepathFull)
 	if err != nil {
 		return err, mp
 	}
-	mp = FilesConstructMap(raw)[0]
-	return nil, mp
+	mp_ := FilesConstructMap(raw)
+	if len(mp_) == 0 {
+		return nil, Files{}
+	}
+	return nil, mp_[0]
 }
 
-func GetScrapeByInfoHashInTrackers(filepath string, trackers []string, hash string, proxy string) (error, []Files){
+func GetScrapeByInfoHashInTrackers(filepath string, trackers []string, hash string, proxy string) (error, []Files) {
 	var mp []Files
-	for tracker := range trackers{
-		err, r:=GetScrapeByInfoHash(filepath, trackers[tracker], hash, proxy)
-		if err != nil{
+	for tracker := range trackers {
+		err, r := GetScrapeByInfoHash(filepath, trackers[tracker], hash, proxy)
+		if err != nil {
 			continue
 		}
-		mp=append(mp, r)
+		mp = append(mp, r)
 	}
-	if len(mp) == 0{
+	if len(mp) == 0 {
 		return errors.New("Can't get scrape thought proxy"), nil
 	}
 	return nil, mp
 }
-
-
-
