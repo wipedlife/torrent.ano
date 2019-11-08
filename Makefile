@@ -4,7 +4,7 @@ INDEXTRACKER_OUTNAME=indextracker
 TRACKERMANAGER_OUTNAME=./cmd/trackermanager
 
 all: submodules indextracker trackermanager
-	$(info Its succefuly compiled. Check the README.md)	
+	$(info trackermanager and indexmanager already compiled; not recompiling. use 'make clear && make' to create new binaries)	
 indextracker:
 	$(PREFIX) $(COMPILER) build -o $(INDEXTRACKER_OUTNAME)
 trackermanager:
