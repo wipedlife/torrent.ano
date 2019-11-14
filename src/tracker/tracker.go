@@ -22,10 +22,10 @@ func RequestLogger(targetMux http.Handler) http.Handler {
 
 		log.Infof(
 //			"\"%s %s\" - %s [%v]",
-			"\"%s %s\" - %s",
+			"- %s - \"%s %s\"",
+			requesterIP,
 			r.Method,
 			r.RequestURI,
-			requesterIP,
 //			time.Since(start),
 		)
 	})
