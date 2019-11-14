@@ -74,7 +74,8 @@ func log(lvl logLevel, f string, args ...interface{}) {
 	if accept(lvl) {
 		m := fmt.Sprintf(f, args...)
 		t := time.Now()
-		fmt.Fprintf(out, "%s[%s] %s %s\x1b[0;0m\n", lvl.Color(), lvl.Name(), t, m)
+		t = t.Round(0)
+		fmt.Fprintf(out, "%s[%s] %.19s %s\x1b[0;0m\n", lvl.Color(), lvl.Name(), t, m)
 		if lvl == fatal {
 			panic(m)
 		}

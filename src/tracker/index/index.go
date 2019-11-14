@@ -46,7 +46,7 @@ func (s *Server) Error(w http.ResponseWriter, msg string, j bool) {
 		err = s.tmpl.ExecuteTemplate(w, "error.html.tmpl", p)
 	}
 	if err != nil {
-		log.Errorf("error rendering error page: %s", msg)
+		log.Errorf("Error rendering error page: %s", msg)
 	}
 }
 
@@ -217,8 +217,8 @@ func (s *Server) addTorrent(w http.ResponseWriter, r *http.Request, cat model.Ca
 	tags := r.FormValue("torrent-tags")
 	name := r.FormValue("torrent-name")
 	description := strings.TrimFunc(r.FormValue("torrent-description"), util.IsSpace)
-	if len(description) < 5{
-		s.Error(w, "Pleaze add torrent description(minumim len is 5 chars)", j)
+	if len(description) < 20 {
+		s.Error(w, "Torrent description is too short! Minimum length is 20 characters.", j)
 		return
 	}
 

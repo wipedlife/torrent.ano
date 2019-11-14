@@ -3,7 +3,7 @@ package tracker
 import (
 	"net/http"
 	"os"
-	"time"
+//	"time"
 	"tracker/config"
 	"tracker/db"
 	"tracker/feed"
@@ -13,7 +13,7 @@ import (
 
 func RequestLogger(targetMux http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		start := time.Now()
+//		start := time.Now()
 
 		targetMux.ServeHTTP(w, r)
 
@@ -21,11 +21,12 @@ func RequestLogger(targetMux http.Handler) http.Handler {
 		requesterIP := r.RemoteAddr
 
 		log.Infof(
-			"%s\t\t%s\t\t%s\t\t%v",
+//			"\"%s %s\" - %s [%v]",
+			"\"%s %s\" - %s",
 			r.Method,
 			r.RequestURI,
 			requesterIP,
-			time.Since(start),
+//			time.Since(start),
 		)
 	})
 }
@@ -63,7 +64,7 @@ func Run() {
 	}
 	addr := cfg.Index.Addr
 
-	log.Infof("serve http at http://%s/", addr)
+	log.Infof("torrent.ano running on http://%s/", addr)
 
 	//log.Infof( "%s" , cfg.Log.Level )
 
