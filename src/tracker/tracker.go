@@ -3,12 +3,32 @@ package tracker
 import (
 	"net/http"
 	"os"
+	"time"
 	"tracker/config"
 	"tracker/db"
 	"tracker/feed"
 	"tracker/index"
 	"tracker/log"
 )
+
+func RequestLogger(targetMux http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+
+		targetMux.ServeHTTP(w, r)
+
+		// log request by who(IP address)
+		requesterIP := r.RemoteAddr
+
+		log.Infof(
+			"%s\t\t%s\t\t%s\t\t%v",
+			r.Method,
+			r.RequestURI,
+			requesterIP,
+			time.Since(start),
+		)
+	})
+}
 
 func Run() {
 	fname := "default.ini"
@@ -44,8 +64,15 @@ func Run() {
 	addr := cfg.Index.Addr
 
 	log.Infof("serve http at http://%s/", addr)
-	err = http.ListenAndServe(addr, idx)
+
+	//log.Infof( "%s" , cfg.Log.Level )
+
+	if cfg.Log.Level == "debug" {
+		err = http.ListenAndServe(addr, RequestLogger(idx))
+	} else {
+		err = http.ListenAndServe(addr, idx)
+	}
 	if err != nil {
-		log.Fatalf("http serve failed: %s", err)
+		log.Fatalf("serve start err %s", err)
 	}
 }
