@@ -217,6 +217,10 @@ func (s *Server) addTorrent(w http.ResponseWriter, r *http.Request, cat model.Ca
 	tags := r.FormValue("torrent-tags")
 	name := r.FormValue("torrent-name")
 	description := strings.TrimFunc(r.FormValue("torrent-description"), util.IsSpace)
+	if len(description) < 5{
+		s.Error(w, "Pleaze add torrent description(minumim len is 5 chars)", j)
+		return
+	}
 
 	s.requireAuth(func(w http.ResponseWriter, r *http.Request) {
 		if len(description) == 0 {
