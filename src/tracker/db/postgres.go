@@ -119,7 +119,6 @@ func (st *Postgres) GetFrontPageTorrents() (torrents []model.Torrent, err error)
 			t.Category.Name = cat.Name
 			torrents = append(torrents, t)
 			curLen = len(torrents);
-			fmt.Println( curLen )
 		}
 		rows.Close()
 	} else if err == sql.ErrNoRows {
@@ -183,12 +182,12 @@ func (st *Postgres) GetAllCategories() (cats []model.Category, err error) {
 			rows.Scan(&cat.Name, &cat.ID)
 			cats = append(cats, cat)
 		}
-                for i, v := range cats{
+                /*for i, v := range cats{
                         if v.Name == "pr0n"{
                                 cats = append(cats[:i], cats[i+1:]...);
 				break;
                         }
-                }
+                }*/
 
 		rows.Close()
 	}
