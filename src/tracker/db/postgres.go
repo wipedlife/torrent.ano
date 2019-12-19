@@ -98,8 +98,12 @@ func (st *Postgres) Init() (err error) {
 }
 
 func (st *Postgres) GetFrontPageTorrents() (torrents []model.Torrent, err error) {
+ const needLen=10;
+ var curLen int = len(torrents)
+ var jOff int = 0;
+ for curLen < needLen {
 	var rows *sql.Rows
-	rows, err = st.conn.Query(fmt.Sprintf("SELECT infohash, name, uploaded_at, total_size, category_id FROM %s ORDER BY uploaded_at DESC LIMIT 10", tableMetaInfo))
+	rows, err = st.conn.Query(fmt.Sprintf("SELECT infohash, name, uploaded_at, total_size, category_id FROM %s ORDER BY uploaded_at DESC LIMIT %d OFFSET %d", tableMetaInfo, needLen - curLen, curLen+jOff ))
 	if err == nil {
 		for rows.Next() {
 			var t model.Torrent
@@ -108,13 +112,20 @@ func (st *Postgres) GetFrontPageTorrents() (torrents []model.Torrent, err error)
 			infohash, _ := hex.DecodeString(ih)
 			copy(t.IH[:], infohash)
 			cat, _ := st.GetCategoryByID(t.Category.ID)
+			if cat.Name == "pr0n"{
+				jOff+=1;
+				continue;
+			}
 			t.Category.Name = cat.Name
 			torrents = append(torrents, t)
+			curLen = len(torrents);
+			fmt.Println( curLen )
 		}
 		rows.Close()
 	} else if err == sql.ErrNoRows {
 		err = nil
 	}
+ }//
 
 	return
 }

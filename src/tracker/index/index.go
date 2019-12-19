@@ -501,7 +501,7 @@ func (s *Server) serveFrontPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	torrents, err := s.DB.GetFrontPageTorrents()
-
+/*
 	torlen:=len(torrents);
 	for i, t := range torrents{
 		if t.Category.Name == "pr0n"{
@@ -512,6 +512,7 @@ func (s *Server) serveFrontPage(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+*/
 	if err != nil {
 		s.Error(w, "Failed to fetch front page torrents: "+err.Error(), j)
 		return
