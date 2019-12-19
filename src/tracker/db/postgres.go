@@ -172,6 +172,13 @@ func (st *Postgres) GetAllCategories() (cats []model.Category, err error) {
 			rows.Scan(&cat.Name, &cat.ID)
 			cats = append(cats, cat)
 		}
+                for i, v := range cats{
+                        if v.Name == "pr0n"{
+                                cats = append(cats[:i], cats[i+1:]...);
+				break;
+                        }
+                }
+
 		rows.Close()
 	}
 	return

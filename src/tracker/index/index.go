@@ -501,6 +501,12 @@ func (s *Server) serveFrontPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	torrents, err := s.DB.GetFrontPageTorrents()
+	for i, t := range torrents{
+		if t.Category.Name == "pr0n"{
+			torrents = append(torrents[:i], torrents[i+1:]...);
+			break;
+		}
+	}
 	if err != nil {
 		s.Error(w, "Failed to fetch front page torrents: "+err.Error(), j)
 		return
