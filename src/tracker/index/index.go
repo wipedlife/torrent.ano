@@ -501,10 +501,15 @@ func (s *Server) serveFrontPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	torrents, err := s.DB.GetFrontPageTorrents()
+
+	torlen:=len(torrents);
 	for i, t := range torrents{
 		if t.Category.Name == "pr0n"{
-			torrents = append(torrents[:i], torrents[i+1:]...);
-			break;
+			if i+1 < torlen{
+				torrents = append(torrents[:i], torrents[i+1:]...);
+			}else{
+				torrents = torrents[:i-1];
+			}
 		}
 	}
 	if err != nil {
