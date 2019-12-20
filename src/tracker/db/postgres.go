@@ -103,6 +103,9 @@ func (st *Postgres) GetFrontPageTorrents() (torrents []model.Torrent, err error)
  var jOff int = 0;
  for curLen < needLen {
 	var rows *sql.Rows
+	//TODO: GetBadCategories....
+
+	//TODO: where ... category_id ... not like ...
 	rows, err = st.conn.Query(fmt.Sprintf("SELECT infohash, name, uploaded_at, total_size, category_id FROM %s ORDER BY uploaded_at DESC LIMIT %d OFFSET %d", tableMetaInfo, needLen - curLen, curLen+jOff ))
 	if err == nil {
 		for rows.Next() {
